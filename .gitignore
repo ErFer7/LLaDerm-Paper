@@ -114,11 +114,8 @@ acs-*.bib
 *.acn
 *.acr
 *.glg
-*.glg-abr
 *.glo
-*.glo-abr
 *.gls
-*.gls-abr
 *.glsdefs
 *.lzo
 *.lzs
@@ -160,9 +157,6 @@ acs-*.bib
 # TODO Uncomment the next line if you use knitr and want to ignore its generated tikz files
 # *.tikz
 *-tikzDictionary
-
-# latexindent will create succesive backup files by default
-#*.bak*
 
 # listings
 *.lol
@@ -213,10 +207,6 @@ _minted*
 
 # scrwfile
 *.wrt
-
-# spelling
-*.spell.bad
-*.spell.txt
 
 # svg
 svg-inkscape/
@@ -283,9 +273,6 @@ TSWLatexianTemp*
 *.bak
 *.sav
 
-# latexindent.pl
-*.bak[0-9]*
-
 # Texpad
 .texpadtmp
 
@@ -324,3 +311,7 @@ TSWLatexianTemp*
 # option is specified. Footnotes are the stored in a file with suffix Notes.bib.
 # Uncomment the next line to have this generated file ignored.
 #*Notes.bib
+
+# Custom
+*.pdf
+cache
