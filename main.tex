@@ -2,18 +2,26 @@
 
 \IEEEoverridecommandlockouts
 
-\usepackage{cite}
-\usepackage{amsmath,amssymb,amsfonts}
-\usepackage{algorithmic}
-\usepackage{graphicx}
-\usepackage{textcomp}
-\usepackage{xcolor}
+\usepackage[nomain, acronym, symbols]{glossaries}
+\usepackage[english]{babel}
+\usepackage[numbers]{natbib}
+\usepackage{hyperref}
+
+\loadglsentries{acronyms}
+
+% TODO: Authors
+% TODO: Abstract
+% TODO: Introduction
+% TODO: Basic concepts
+% TODO: Related works
+% TODO: Developement
+% TODO: Results and discussion
+% TODO: Conclusion
 
 \begin{document}
 
 \title{Fine-tuning of LLaMA for Skin Lesion Classification and Medical Report Generation}
 
-% TODO: Authors
 \author{\IEEEauthorblockN{1\textsuperscript{st} Eric Fernandes Evaristo}
 \IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
 \textit{name of organization (of Aff.)}\\
@@ -36,13 +44,12 @@ email address or ORCID}
 
 \maketitle
 
-% TODO: Abstract
 \begin{abstract}
-The early detection of skin lesions is crucial for the treatment of severe diseases, such as skin cancer. However, these lesions are usually only diagnosed by dermatologists. Given that these professionals are not always available in regions with less healthcare infrastructure, it would be useful to have a tool capable of skin lesion classification and medical report generation. In this work, we fine-tuned LLaMA 3.2 11B
+    The early detection of skin lesions is crucial for the treatment of severe diseases, such as skin cancer. However, these lesions are usually only diagnosed by dermatologists. Given that these professionals are not always available in regions with less healthcare infrastructure, it would be useful to have a tool capable of skin lesion classification and medical report generation. For this purpose, we fine-tuned \gls{llama} 3.2 11B with \gls{qlora} and \gls{lora}. The fine-tuning was performed in two scenarios, in the first scenario, we trained the model with the \gls{ham10000} dataset for classification tasks only, achieving an accuracy of up to 86.2\% with \gls{lora}. In the second scenario, the model was trained with the \gls{sttsc} dataset for both classification and report generation. The final models presented a classification accuracy of 45.2\% with \gls{qlora} and 44.5\% with \gls{lora}. This low performance can be explained by inconsistencies in the \gls{sttsc} dataset.
 \end{abstract}
 
 \begin{IEEEkeywords}
-component, formatting, style, styling, insert
+    Skin Lesions, Skin Cancer, MLLM, \gls{llama}, Fine-tuning, \gls{qlora}, \gls{lora}.
 \end{IEEEkeywords}
 
 \section{Introduction}
