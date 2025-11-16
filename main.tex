@@ -6,12 +6,11 @@
 \usepackage[english]{babel}
 \usepackage[numbers]{natbib}
 \usepackage{hyperref}
+\usepackage{graphicx}
 
 \loadglsentries{acronyms}
 
 % TODO: Authors
-% TODO: Introduction
-% TODO: Basic concepts
 % TODO: Related works
 % TODO: Developement
 % TODO: Results and discussion
@@ -54,11 +53,65 @@ email address or ORCID}
 
 \section{Introduction}
 
-Several skin diseases can have symptons such as skin lesions, most notably, skin cancer, which is specially relevant. In Brazil, 30\% of malignant tumors are attributed to skin cancer \cite{skin_cancer_in_brazil}. An accurate and early classification of the lesion category is fundamental for an adequate treatment. However, this is a complex task that depends on many visual aspects, requiring then the analysis from trained professionals, such as dermatologists \cite{habif2015clinical, skin_cancer_survival}.
+Skin lesions are symptoms of several diseases, most notably skin cancer. In Brazil, skin cancer is particularly relevant, accounting for 30\% of all malignant tumors \cite{skin_cancer_in_brazil}. Accurate and early classification of the lesion category is fundamental for adequate treatment. However, this is a complex task dependent on many visual aspects, thus requiring analysis by trained professionals, such as dermatologists \cite{habif2015clinical, skin_cancer_survival}.
 
-The early detection of skin cancer has a socio-economic factor. As noted in studies by \citet{skin_cancer_socioeconomic} and \citet{santos2020desigualdades}, those who present tumors in more advanced stages tend come from a worse socio-economic background. This can be correlated with the lack of access to healthcare and dermatologists for these patients. However, in the brazilian context, healthcare is partially provided by \gls{acs}, or Community Health Agents in english, which can offer basic health assistance and are also in contact with poorer communities \cite{filgueiras2011agente}.
+The early detection of skin cancer also has a socio-economic factor. As noted in studies by \citet{skin_cancer_socioeconomic} and \citet{santos2020desigualdades}, patients who present with tumors in more advanced stages tend to come from a lower socio-economic background. This can be correlated with a lack of access to specialized healthcare and dermatologists for these patients. However, in the Brazilian context, primary healthcare is partially provided by \gls{acs} (Community Health Agents), who offer basic health assistance and are in direct contact with impoverished communities \cite{filgueiras2011agente}.
 
-In this context, a tool with ease of use and capable of classifying skin lesions and generating reports would be useful, as it could be utilized by \gls{acs} as form of screening. Thus, addressing the lack of dermatologists for part of the population. The requirements for this tool can be addressed adequately by a \gls{mllm}. Therefore, for in this work, \gls{llama}-3.2-11B was chosen % TODO: Continue
+In this context, a user-friendly tool capable of classifying skin lesions and generating reports would be useful, as it could be used by \gls{acs} as a screening mechanism, thereby addressing the lack of access to dermatologists for part of the population. The requirements for such a tool could be addressed by a \gls{mllm}. Therefore, \gls{llama}-3.2-11B was chosen as the base model in this work for the experimental development of a skin lesion classifier and report generator.
+
+The development was divided into two scenarios. In the first, the model was fine-tuned with the \gls{ham10000} dataset. In the second scenario, the model was fine-tuned with the \gls{sttsc} dataset. Both scenarios employed \gls{qlora} and \gls{lora}.
+
+\subsection{Contributions}
+
+The following contributions are presented in this work:
+
+\begin{itemize}
+    \item The development of a fine-tuned version of \gls{llama}-3.2-11B capable of classifying skin lesions and generating reports.
+    \item A comparative analysis of the fine-tuned models with the base model.
+    \item A comparative analysis of the efficiency of \gls{qlora} and \gls{lora} in fine-tuning.
+\end{itemize}
+
+\section{Basic Concepts}
+
+This section defines the basic concepts applied in this research.
+
+\subsection{Skin Lesion Images}
+
+Skin lesion images can be classified into different categories. The procedures described by \citet{fotos_dermatologia} for obtaining these images present three categories: dermatoscopy, close-up and panoramic images. For the fine-tuning, only dermatoscopy and close-up images were used.
+
+Dermatoscopy images are obtained with a dermatoscope, which is used to capture an image of the specific area of skin where the lesion is. Alternatively, close-up images can be obtained with a regular camera and a ruler, where they are used to take a picture of the region of the body where the skin lesion appears with a distance of 30cm from the skin lesion to the camera. \autoref{fig:skin_lesion_exams} presents examples of exams with the categories of images utilized in this work.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{figures/skin_lesion_exams.png}}
+\caption{Example of a dermatoscopy (left) and a close-up (right) exam. Source: \citet{fotos_dermatologia}}
+\label{fig:skin_lesion_exams}
+\end{figure}
+
+\subsection{Multimodal Large Language Models}
+
+\glspl{mllm} are generative \gls{ai} models based on \glspl{llm} that are capable of processing information from multiple modalities, such as images, audio, and text. For the interpretation of multimodal data, \glspl{mllm} have modality encoders, which are integrated with the \gls{llm} through an input projector. Furthermore, \glspl{llm} and most modality encoders are based on transformers \cite{mllm_survey_2024}.
+
+\subsection{Fine-tuning}
+
+Fine-tuning can be defined as a training procedure with the objective of adapting a pre-trained model for a specific task or domain. With \gls{peft} techniques, such as \gls{qlora} and \gls{lora}, the process can be much less computationally intensive than full-parameter fine-tuning \cite{llm_survey_2023}.
+
+The \gls{lora} method was introduced by \citet{hu2021lora}, utilizing the intrinsic rank of matrices. It introduces smaller trainable matrices while freezing the original model matrices during training, greatly reducing the amount of tunable parameters. After training, the smaller matrices can be added to the original ones, resulting in a fine-tuned model.
+
+In order to further reduce the computational cost, \citet{qlora} introduced \gls{qlora}, a quantized version of \gls{lora}. With this method, low-precision numerical data types such as \gls{nf4} and \gls{bf16} are used.
+
+\section{Related Works}
+
+\section{Methodology and Developement}
+
+\subsection{Initial step}
+
+\subsection{Final step}
+
+\section{Results and Discussion}
+
+\section{Conclusion}
+
+\subsection{Future work}
 
 \bibliographystyle{IEEEtranN}
 \bibliography{references}
