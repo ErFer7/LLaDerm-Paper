@@ -10,9 +10,7 @@
 
 \loadglsentries{acronyms}
 
-% TODO: Authors
-% TODO: Related works
-% TODO: Developement
+% TODO: Development
 % TODO: Results and discussion
 % TODO: Conclusion
 
@@ -20,24 +18,30 @@
 
 \title{Fine-tuning of LLaMA for Skin Lesion Classification and Medical Report Generation}
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} Eric Fernandes Evaristo}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
+\author{
+    \IEEEauthorblockN{1\textsuperscript{st} Eric Fernandes Evaristo}
+    \IEEEauthorblockA{
+        \textit{dept. of \acrlong{ine}} \\
+        \textit{\acrlong{ufsc}} \\
+        Florianópolis, Brazil \\
+        eric.f.evaristo@posgrad.ufsc.br
+    }
 \and
-\IEEEauthorblockN{2\textsuperscript{nd} Aldo von Wangenheim}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
+    \IEEEauthorblockN{2\textsuperscript{nd} Aldo von Wangenheim}
+    \IEEEauthorblockA{
+        \textit{dept. of \acrlong{ine}} \\
+        \textit{\acrlong{ufsc}} \\
+        Florianópolis, Brazil \\
+        aldo.vw@ufsc.br
+    }
 \and
-\IEEEauthorblockN{3\textsuperscript{rd} Rodrigo de Paula e Silva Ribeiro}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
-\and
+    \IEEEauthorblockN{3\textsuperscript{rd} Rodrigo de Paula e Silva Ribeiro}
+    \IEEEauthorblockA{
+        \textit{dept. of \acrlong{ine}} \\
+        \textit{\acrlong{ufsc}} \\
+        Florianópolis, Brazil \\
+        ribeiro.rodrigo@posgrad.ufsc.br
+    }
 }
 
 \maketitle
@@ -101,11 +105,25 @@ In order to further reduce the computational cost, \citet{qlora} introduced \gls
 
 \section{Related Works}
 
+Over the past years, several papers have demonstrated applications of \glspl{mllm} to the analysis of medical images. In a systematic literature review, \citet{eric2025systematic} highlights the main advancements in this field. Overall, most \glspl{mllm} are generalist, operating over several medical domains. However, some models such as SkinGPT-4 and MpoxVLM focus on dermatological tasks \cite{zhou2023skingpt,cao2024mpoxvlm}.
+
+What distinguishes this work from others is the utilization of \gls{llama}-3.2-11B, since other models focused on dermatology are still based on older \glspl{mllm}. Furthermore, a comparative analysis of \gls{qlora} and \gls{lora} in fine-tuning has not been presented in the existing literature.
+
 \section{Methodology and Developement}
 
-\subsection{Initial step}
+The following subsections will present the development scenarios. The resulting models from the first scenario were not utilized in the second one. This Methodology was implemented for a better assessment of the efficiency of different fine-tuning methods. The trainings were conducted with a NVIDIA H100 on a NVIDIA DGX H100 platform and with the framework Unsloth.
 
-\subsection{Final step}
+\subsection{First Scenario}
+
+The first scenario is comprised of the fine-tuning of the base model with different dataset sizes and fine-tuning parameters. \gls{ham10000} was utilized as the dataset, it contains 13,354 dermatoscopy images with a resolution of \(600 \times 450\) pixels. This dataset is split between training, test and validation sections, with 9,577, 1,258 and 2,492 images, respectively. For the fine-tuning, the dataset was adapted to a conversational structure, where the user asks for the skin lesion classification in the image and the model answers accordingly.
+
+\gls{llama}-3.2-11B was fine-tuned with 450, 900 and 5,000 samples from the training dataset. The hyperparameters were based on recommended values by Unsloth documentation. For each sample size, a \gls{qlora} and \gls{lora} were used.
+
+\subsection{Second Scenario}
+
+In the second scenario, the base model was fine-tuned with the \gls{sttsc} dataset. This dataset was created through the sanitization and structuring of a set of 31,243 images and 3,651 exams, resulting in a dataset with 4,736 samples for training and 1,167 samples for testing. Each sample consists of a pair of a image and a medical report with the skin lesion classification, a risk classification, a conclusion field with recommendations and a brief diagnostic. The data was also structured in a conversational pattern, where the user presents an image and asks for its information, requesting it to filled with a specific template and the model answers as required.
+
+Here, the fine-tuning was initially performed only with \gls{qlora} in order to find ideal hyperparameters more efficiently. In total, eight models were trained with variations on the rank, \(\alpha_{\gls{lora}}\) and number of epochs. Besides, the hyperparameters were adjusted according to recommendations from \citet{tribes2023hyperparameter} and the Unsloth documentation. The resulting model with the highest accuracy in skin lesion classification was fine-tuned with a rank and \(\alpha_{\gls{lora}}\) of 128 and 3 epochs. These hyperparameters were then used for the fine-tuning with \gls{lora}.
 
 \section{Results and Discussion}
 
