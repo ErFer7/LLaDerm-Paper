@@ -9,7 +9,6 @@
 \usepackage{graphicx}
 \usepackage{multirow}
 \usepackage{caption}
-\usepackage{flushend}
 \usepackage{dblfloatfix}
 \usepackage{cleveref}
 
@@ -229,10 +228,57 @@ This discrepancy in memory utilization between the first and second scenarios ca
 
 \section{Conclusion}
 
+The presented results found that the fine-tuning of the \gls{llama}-3.2-11B model can be done efficiently through training with \gls{qlora}. The models trained with this method achieved performance similar to that of models trained with \gls{lora} and required less memory during training.
+
+The results of the second scenario were unsatisfactory regarding the lesion classification criterion, reaching an accuracy of only 45.2\% after the fine-tuning with \gls{qlora}. Although the volume of data used in this scenario was similar to the larger volumes of the first scenario. The data volume in the training set may have been insufficient for fine-tuning, making it hard for the final models to perform a complex task such as generating reports with classifications and recommendations. In addition to the insufficient volume, the dataset imbalance, characterized by the rarity of some lesions, may have impacted the trained models, leading to lower performance in classifying lesions with few occurrences in the dataset. Another negative aspect of the set was the variability within some lesion classes, specially in classes that represent undefined lesions. The large volume of uncertain classes may have led to the low performance observed in the classification tasks.
+
+The performance in generating the conclusion texts in the final stage was reasonably satisfactory. However, some problems were identified, such as spelling errors and non-ideal formatting. These characteristics also stem from inconsistencies and errors in the dataset.
+
 \subsection{Future work}
+
+Considering the results and limitations identified in this project, we propose the construction of a new dataset with greater volume and consistency between classes. It would also be necessary to include a new class referring to healthy cases, as the model is currently fine-tuned to classify only different skin lesions, disregarding the possibility of the absence of lesions.
+
+In-depth optimization of training hyperparameters is also recommended, possibly using grid search techniques.
+
+The use of other \glspl{mllm} is also recommended, particularly Gemma 3 by \citet{team2025gemma}. This would make it possible to conduct a more advanced comparison between the different models.
+
+Finally, we also suggest the use of manual evaluations on parts of the test results. Currently, the results are analyzed automatically, which can lead to the disregard of important aspects of the generated text. With the participation of qualified dermatologists, it would be possible to evaluate the content of these texts in greater depth.
+
+\section{Conclusion}
+
+The presented results show that the \gls{llama}-3.2-11B model can be efficiently fine-tuned through training with \gls{qlora}. The models trained with this method achieved performance similar to those trained with \gls{lora} and required less memory during training.
+
+The results of the second scenario were unsatisfactory regarding the lesion classification criterion, reaching an accuracy of only 45.2\% after fine-tuning with \gls{qlora}, despite the data volume being similar to the largest volume of the first scenario. The data volume in the training set may have been insufficient for fine-tuning, making it difficult for the final models to perform a complex task such as generating reports with classifications and recommendations. In addition to the insufficient volume, dataset imbalance, characterized by the rarity of some lesions, may have impacted the trained models, leading to lower performance in classifying lesions with few occurrences in the dataset. Another negative aspect of the set was the variability within some lesion classes, especially in classes that represent undefined lesions. The large volume of uncertain classes may have contributed to the low performance observed in the classification tasks.
+
+The performance in generating the reports in the final stage was reasonably satisfactory. However, some problems were identified, such as spelling errors and non-ideal formatting. These characteristics also appear to stem from inconsistencies and errors in the dataset.
+
+\subsection{Future work}
+
+Considering the results and limitations identified in this project, we propose the construction of a new dataset with greater volume and consistency between classes. It would also be necessary to include a new class referring to healthy cases, as the model is currently fine-tuned to classify only different skin lesions, disregarding the possibility of the absence of lesions.
+
+In-depth optimization of training hyperparameters is also recommended, possibly using grid search techniques.
+
+The use of other \glspl{mllm} is also recommended, particularly Gemma 3 by \citet{team2025gemma}. This would make it possible to conduct a more advanced comparison between the different models.
+
+Finally, we also suggest the use of manual evaluation of parts of the test results. Currently, the results are analyzed automatically, which can lead to disregarding important aspects of the generated text. With the participation of qualified dermatologists, it would be possible to evaluate the content of these texts in greater depth.
 
 \bibliographystyle{IEEEtranN}
 \bibliography{references}
+
+\clearpage
+
+\onecolumn
+
+\section*{Links}
+
+\begin{itemize}
+    \item \textbf{Link para a publicação original (TCC)}: \url{https://repositorio.ufsc.br/handle/123456789/266618}
+    \item \textbf{Link alternativo}: \url{https://github.com/ErFer7/LLaDerm/releases/download/TCC-Final/TCC.-.Final.pdf}
+\end{itemize}
+
+\section*{Modificações}
+
+Um gráfico de barras foi criado para as métricas de \gls{nlp}, substituindo a tabela no trabalho original. Melhorando a visualização comparativa das métricas.
 
 \end{document}
 
