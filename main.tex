@@ -47,7 +47,7 @@
 \maketitle
 
 \begin{abstract}
-    The early detection of skin lesions is crucial for the treatment of severe diseases, such as skin cancer. However, these lesions are usually only diagnosed by dermatologists. Given that these professionals are not always available in regions with less healthcare infrastructure, it would be useful to have a tool capable of skin lesion classification and medical report generation. For this purpose, we fine-tuned \gls{llama} 3.2 11B with \gls{qlora} and \gls{lora}. The fine-tuning was performed in two scenarios, in the first scenario, we trained the model with the \gls{ham10000} dataset for classification tasks only, achieving an accuracy of up to 86.2\% with \gls{lora}. In the second scenario, the model was trained with the \gls{sttsc} dataset for both classification and report generation. The final models presented a classification accuracy of 45.2\% with \gls{qlora} and 44.5\% with \gls{lora}. This low performance can be explained by inconsistencies in the \gls{sttsc} dataset.
+    The early detection of skin lesions is crucial for the treatment of severe diseases, such as skin cancer. However, these lesions are usually only diagnosed by dermatologists. Given that these professionals are not always available in regions with less healthcare infrastructure, it would be useful to have a tool capable of skin lesion classification and medical report generation. For this purpose, we fine-tuned the \gls{llama} 3.2 11B with \gls{qlora} and \gls{lora}. The fine-tuning was performed in two scenarios, in the first scenario, we trained the model with the \gls{ham10000} dataset for classification tasks only, achieving an accuracy of up to 86.2\% with \gls{lora}. In the second scenario, the model was trained with the \gls{sttsc} dataset for both classification and report generation. The final models presented a classification accuracy of 45.2\% with \gls{qlora} and 44.5\% with \gls{lora}. This low performance can be explained by inconsistencies in the \gls{sttsc} dataset.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -69,9 +69,9 @@ The development was divided into two scenarios. In the first, the model was fine
 The following contributions are presented in this work:
 
 \begin{itemize}
-    \item The development of a fine-tuned version of \gls{llama}-3.2-11B capable of classifying skin lesions and generating reports.
-    \item A comparative analysis of the fine-tuned models with the base model.
-    \item A comparative analysis of the efficiency of \gls{qlora} and \gls{lora} in fine-tuning.
+    \item A comparative analysis of the fine-tuned models with the base model;
+    \item A comparative analysis of the efficiency of \gls{qlora} and \gls{lora} in fine-tuning;
+    \item An evaluation of the impact of dataset quality in the fine-tuning of the base model.
 \end{itemize}
 
 \section{Basic Concepts}
@@ -116,13 +116,13 @@ The following subsections will present the development scenarios. The resulting 
 
 The first scenario is comprised of the fine-tuning of the base model with different dataset sizes and fine-tuning parameters. \gls{ham10000} was utilized as the dataset, it contains 13,354 dermatoscopy images with a resolution of \(600 \times 450\) pixels. This dataset is split between training, test and validation sections, with 9,577, 1,258 and 2,492 images, respectively. For the fine-tuning, the dataset was adapted to a conversational structure, where the user asks for the skin lesion classification in the image and the model answers accordingly.
 
-\gls{llama}-3.2-11B was fine-tuned with 450, 900 and 5,000 samples from the training dataset. The hyperparameters were based on recommended values by Unsloth documentation. For each sample size, a \gls{qlora} and \gls{lora} were used.
+\gls{llama}-3.2-11B was fine-tuned with 450, 900 and 5,000 samples from the training dataset. The hyperparameters were based on recommended values by the Unsloth documentation. For each sample size, \gls{qlora} and \gls{lora} were used.
 
 \subsection{Second Scenario}
 
-In the second scenario, the base model was fine-tuned with the \gls{sttsc} dataset. This dataset was created through the sanitization and structuring of a set of 31,243 close-up images and 3,651 exams, resulting in a dataset with 4,736 samples for training and 1,167 samples for testing. Each sample consists of a pair of a close-up image with the highest resolution dimension scaled to 1024 pixels and a medical report with the skin lesion classification, a risk classification, a conclusion field with recommendations and a brief diagnostic. The data was also structured in a conversational pattern, where the user presents an image and asks for its information, requesting it to filled with a specific template and the model answers as required.
+In the second scenario, the base model was fine-tuned with the \gls{sttsc} dataset. This dataset was created through the sanitization and structuring of a set of 31,243 close-up images and 3,651 exams, resulting in a dataset with 4,736 samples for training and 1,167 samples for testing. Each sample consists of a pair of a close-up image with the highest resolution dimension scaled to 1024 pixels and a medical report with the skin lesion classification, a risk classification, and a conclusion field with recommendations and a brief diagnostic. The data was also structured in a conversational pattern, where the user presents an image and asks for its classification and report, requesting it to filled with a specific template, and the model answers as required.
 
-Here, the fine-tuning was initially performed only with \gls{qlora} in order to find ideal hyperparameters more efficiently. In total, eight models were trained with variations on the rank, \(\alpha_{\gls{lora}}\) and number of epochs. Besides, the hyperparameters were adjusted according to recommendations from \citet{tribes2023hyperparameter} and the Unsloth documentation. The resulting model with the highest accuracy in skin lesion classification was fine-tuned with a rank and \(\alpha_{\gls{lora}}\) of 128 and 3 epochs. These hyperparameters were then used for the fine-tuning with \gls{lora}.
+Here, the fine-tuning was initially performed only with \gls{qlora} in order to find ideal hyperparameters more efficiently. In total, eight models were trained with variations on the rank, \(\alpha_{\gls{lora}}\) and number of epochs. Besides, the hyperparameters were adjusted according to recommendations from \citet{tribes2023hyperparameter}. The resulting model with the highest accuracy in skin lesion classification was fine-tuned with a rank and \(\alpha_{\gls{lora}}\) of 128 and 3 epochs. These hyperparameters were then used for the fine-tuning with \gls{lora}.
 
 \section{Results and Discussion}
 
@@ -142,7 +142,7 @@ For the second scenario, both fine-tuned models were prompted with 1,167 questio
 
 \subsection{Performance in Skin Lesion Classification}
 
-The results for skin lesion classification indicate that models fine-tuned with close-up images achieved a undesirable performance. This accuracy is considerably lower than that of the models from the first scenario, which were fine-tuned with dermatoscopy images.
+The results for skin lesion classification indicate that models fine-tuned with close-up images achieved a undesirable performance. This accuracy was considerably lower than that of the models from the first scenario, which were fine-tuned with dermatoscopy images.
 
 The models from the first scenario achieved superior results even with significantly smaller training volumes. For instance, the \gls{qlora} model trained on only 450 dermatoscopy images (65.5\%) outperformed the \gls{qlora} model trained on 4,736 close-up images (45.2\%).
 
@@ -190,7 +190,7 @@ The risk classification, introduced only in the second scenario, showed an unsat
 
 \subsection{Performance in Report Generation}
 
-The performance in report generation was evaluated with three \gls{nlp} metrics: \gls{bleu}, \gls{rouge}, and \gls{meteor}. The results indicate that the fine-tuned models perform much better than the base model in this task. Both the models trained with \gls{qlora} and \gls{lora} successfully generalized the report format, presenting recommendations in a manner similar to a real dermatologist. The greatest improvement was observed with the \gls{bleu} and \gls{meteor} metrics. \autoref{fig:nlp_metrics} depicts the \gls{nlp} metrics for the models.
+The performance in report generation was evaluated with three \gls{nlp} metrics: \gls{bleu}, \gls{rouge}, and the \gls{meteor}. The results indicate that the fine-tuned models perform much better than the base model in this task. Both the models trained with \gls{qlora} and \gls{lora} successfully generalized the report format, presenting recommendations in a manner similar to a real dermatologist. The greatest improvement was observed with the \gls{bleu} and \gls{meteor} metrics. \autoref{fig:nlp_metrics} depicts the \gls{nlp} metrics for the models.
 
 The reports generated by \gls{llama}-3.2-11B followed the specified template and used appropriate medical language, but they failed to provide the expected recommendations. However, the reports generated by the fine-tuned models also presented some problems, such as the presence of grammatical errors, which may be explained by errors in the source dataset itself.
 
@@ -228,24 +228,6 @@ This discrepancy in memory utilization between the first and second scenarios ca
 
 \section{Conclusion}
 
-The presented results found that the fine-tuning of the \gls{llama}-3.2-11B model can be done efficiently through training with \gls{qlora}. The models trained with this method achieved performance similar to that of models trained with \gls{lora} and required less memory during training.
-
-The results of the second scenario were unsatisfactory regarding the lesion classification criterion, reaching an accuracy of only 45.2\% after the fine-tuning with \gls{qlora}. Although the volume of data used in this scenario was similar to the larger volumes of the first scenario. The data volume in the training set may have been insufficient for fine-tuning, making it hard for the final models to perform a complex task such as generating reports with classifications and recommendations. In addition to the insufficient volume, the dataset imbalance, characterized by the rarity of some lesions, may have impacted the trained models, leading to lower performance in classifying lesions with few occurrences in the dataset. Another negative aspect of the set was the variability within some lesion classes, specially in classes that represent undefined lesions. The large volume of uncertain classes may have led to the low performance observed in the classification tasks.
-
-The performance in generating the conclusion texts in the final stage was reasonably satisfactory. However, some problems were identified, such as spelling errors and non-ideal formatting. These characteristics also stem from inconsistencies and errors in the dataset.
-
-\subsection{Future work}
-
-Considering the results and limitations identified in this project, we propose the construction of a new dataset with greater volume and consistency between classes. It would also be necessary to include a new class referring to healthy cases, as the model is currently fine-tuned to classify only different skin lesions, disregarding the possibility of the absence of lesions.
-
-In-depth optimization of training hyperparameters is also recommended, possibly using grid search techniques.
-
-The use of other \glspl{mllm} is also recommended, particularly Gemma 3 by \citet{team2025gemma}. This would make it possible to conduct a more advanced comparison between the different models.
-
-Finally, we also suggest the use of manual evaluations on parts of the test results. Currently, the results are analyzed automatically, which can lead to the disregard of important aspects of the generated text. With the participation of qualified dermatologists, it would be possible to evaluate the content of these texts in greater depth.
-
-\section{Conclusion}
-
 The presented results show that the \gls{llama}-3.2-11B model can be efficiently fine-tuned through training with \gls{qlora}. The models trained with this method achieved performance similar to those trained with \gls{lora} and required less memory during training.
 
 The results of the second scenario were unsatisfactory regarding the lesion classification criterion, reaching an accuracy of only 45.2\% after fine-tuning with \gls{qlora}, despite the data volume being similar to the largest volume of the first scenario. The data volume in the training set may have been insufficient for fine-tuning, making it difficult for the final models to perform a complex task such as generating reports with classifications and recommendations. In addition to the insufficient volume, dataset imbalance, characterized by the rarity of some lesions, may have impacted the trained models, leading to lower performance in classifying lesions with few occurrences in the dataset. Another negative aspect of the set was the variability within some lesion classes, especially in classes that represent undefined lesions. The large volume of uncertain classes may have contributed to the low performance observed in the classification tasks.
@@ -256,7 +238,7 @@ The performance in generating the reports in the final stage was reasonably sati
 
 Considering the results and limitations identified in this project, we propose the construction of a new dataset with greater volume and consistency between classes. It would also be necessary to include a new class referring to healthy cases, as the model is currently fine-tuned to classify only different skin lesions, disregarding the possibility of the absence of lesions.
 
-In-depth optimization of training hyperparameters is also recommended, possibly using grid search techniques.
+An in depth optimization of training hyperparameters is also recommended, possibly using grid search techniques.
 
 The use of other \glspl{mllm} is also recommended, particularly Gemma 3 by \citet{team2025gemma}. This would make it possible to conduct a more advanced comparison between the different models.
 
