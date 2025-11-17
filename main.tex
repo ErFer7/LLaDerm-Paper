@@ -7,12 +7,13 @@
 \usepackage[numbers]{natbib}
 \usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{flushend}
+\usepackage{dblfloatfix}
+\usepackage{cleveref}
 
 \loadglsentries{acronyms}
-
-% TODO: Development
-% TODO: Results and discussion
-% TODO: Conclusion
 
 \begin{document}
 
@@ -21,7 +22,7 @@
 \author{
     \IEEEauthorblockN{1\textsuperscript{st} Eric Fernandes Evaristo}
     \IEEEauthorblockA{
-        \textit{dept. of \acrlong{ine}} \\
+        \textit{Dept. of \acrlong{ine}} \\
         \textit{\acrlong{ufsc}} \\
         Florianópolis, Brazil \\
         eric.f.evaristo@posgrad.ufsc.br
@@ -29,7 +30,7 @@
 \and
     \IEEEauthorblockN{2\textsuperscript{nd} Aldo von Wangenheim}
     \IEEEauthorblockA{
-        \textit{dept. of \acrlong{ine}} \\
+        \textit{Dept. of \acrlong{ine}} \\
         \textit{\acrlong{ufsc}} \\
         Florianópolis, Brazil \\
         aldo.vw@ufsc.br
@@ -37,7 +38,7 @@
 \and
     \IEEEauthorblockN{3\textsuperscript{rd} Rodrigo de Paula e Silva Ribeiro}
     \IEEEauthorblockA{
-        \textit{dept. of \acrlong{ine}} \\
+        \textit{Dept. of \acrlong{ine}} \\
         \textit{\acrlong{ufsc}} \\
         Florianópolis, Brazil \\
         ribeiro.rodrigo@posgrad.ufsc.br
@@ -51,8 +52,7 @@
 \end{abstract}
 
 \begin{IEEEkeywords}
-    % Some keywords won't need acronyms anyway
-    Skin Lesions, Skin Cancer, MLLM, \gls{llama}, Fine-tuning, \gls{qlora}, \gls{lora}.
+    Skin Lesions, Skin Cancer, \acrshort{mllm}, \gls{llama}, Fine-tuning, \gls{qlora}, \gls{lora}.
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -121,12 +121,111 @@ The first scenario is comprised of the fine-tuning of the base model with differ
 
 \subsection{Second Scenario}
 
-In the second scenario, the base model was fine-tuned with the \gls{sttsc} dataset. This dataset was created through the sanitization and structuring of a set of 31,243 images and 3,651 exams, resulting in a dataset with 4,736 samples for training and 1,167 samples for testing. Each sample consists of a pair of a image and a medical report with the skin lesion classification, a risk classification, a conclusion field with recommendations and a brief diagnostic. The data was also structured in a conversational pattern, where the user presents an image and asks for its information, requesting it to filled with a specific template and the model answers as required.
+In the second scenario, the base model was fine-tuned with the \gls{sttsc} dataset. This dataset was created through the sanitization and structuring of a set of 31,243 close-up images and 3,651 exams, resulting in a dataset with 4,736 samples for training and 1,167 samples for testing. Each sample consists of a pair of a close-up image with the highest resolution dimension scaled to 1024 pixels and a medical report with the skin lesion classification, a risk classification, a conclusion field with recommendations and a brief diagnostic. The data was also structured in a conversational pattern, where the user presents an image and asks for its information, requesting it to filled with a specific template and the model answers as required.
 
 Here, the fine-tuning was initially performed only with \gls{qlora} in order to find ideal hyperparameters more efficiently. In total, eight models were trained with variations on the rank, \(\alpha_{\gls{lora}}\) and number of epochs. Besides, the hyperparameters were adjusted according to recommendations from \citet{tribes2023hyperparameter} and the Unsloth documentation. The resulting model with the highest accuracy in skin lesion classification was fine-tuned with a rank and \(\alpha_{\gls{lora}}\) of 128 and 3 epochs. These hyperparameters were then used for the fine-tuning with \gls{lora}.
 
+% TODO: Results and discussion
 \section{Results and Discussion}
 
+\subsection{Tests}
+
+The results were collected through an automated testing process. Each fine-tuned model from the first scenario was prompted with 1,000 questions, each including an image from the test section of the \gls{ham10000} dataset. The models were configured with a temperature of 0.1 and their answers were limited to 128 tokens.
+
+% This is in the bottom of the second page, it's weird, I know.
+\begin{figure*}[b]
+    \centering
+    \includegraphics[width=1.0\textwidth,keepaspectratio]{figures/metrics_comparison_graph.png}
+    \caption{\gls{nlp} metrics over the generated reports for the base model and the fine-tuned models.}
+    \label{fig:nlp_metrics}
+\end{figure*}
+
+For the second scenario, both fine-tuned models were prompted with 1,167 questions using data from the test section of the \gls{sttsc} dataset. The temperature used was 0.005, with answers limited to 2190 tokens.
+
+\subsection{Performance in Skin Lesion Classification}
+
+The results for the skin lesion classification indicate that models that were fine-tuned with close-up images achieved an unremarkable performance. When compared with the models from the first scenario, fine-tuned with dermatoscopy images, the accuracy was considerably lower.
+
+The models from the first scenario achieved a better accuracy with much smaller training volumes, comparatively, the model fine-tuned with \gls{qlora} and 5000 dermatoscopy images had an accuracy that surpassed the one from the model trained with \gls{qlora} and 4,736 close-up images in 42,2\%. \autoref{tab:overall_comparison_skin_lesions} shows the accuracy for each fine-tuned model.
+
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l|l|c|c}
+        \hline
+        Image category                  & Fine-tuning method & Dataset size & Accuracy (\%) \\ \hline
+        \multirow{10}{*}{Dermatoscopy} & None (Quantized)            & -                     & 11,8 \\
+                                        & None                         & -                     & 14,0 \\ \cline{2--2}
+                                        & \multirow{3}{*}{\gls{qlora}}    & 450                   & 65,5 \\
+                                        &                                & 900                   & 65,2 \\
+                                        &                                & 5000                  & 85,4 \\ \cline{2--2}
+                                        & \multirow{3}{*}{\gls{lora}}     & 450                   & 49,5 \\
+                                        &                                & 900                   & 42,0 \\
+                                        &                                & 5000                  & \textbf{86,2} \\ \hline
+        \multirow{4}{*}{close-up}    & None (Quantized)            & -                     & 14,8 \\
+                                        & None                         & -                     & 17,0 \\ \cline{2--2}
+                                        & \gls{qlora}                     & 4736                  & \textbf{45,2} \\ \cline{2--2}
+                                        & \gls{lora}                      & 4736                  & 44,5 \\ \hline
+    \end{tabular}
+    \caption{Accuracy in the classification of skin lesions. The highest values are highlighted in bold.}
+    \label{tab:overall_comparison_skin_lesions}
+\end{table}
+
+\subsection{Performance in Risk Classification}
+
+The risk classification, introduced only in the second scenario, showed a unsatisfactory performance, with the highest accuracy of 55.1\% being achieved by the model trained with \gls{lora}. \autoref{tab:overall_comparison_risk} presents the accuracy in the risk classification for the fine-tuned models of the second scenario.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l|c}
+        \hline
+        Fine-tuning method & Accuracy (\%) \\ \hline
+        None (Quantized)            & 23,4          \\
+        None                         & 27,4          \\
+        \gls{qlora}                     & 54,6          \\
+        \gls{lora}                      & \textbf{55,1} \\ \hline
+    \end{tabular}
+    \caption{Accuracy in the classification of skin lesions for the second scenario. The highest values are highlighted in bold.}
+    \label{tab:overall_comparison_risk}
+\end{table}
+
+\subsection{Performance in Report Generation}
+
+The performance in report generation was evaluated with three \gls{nlp} metrics: \gls{bleu}, \gls{rouge}, and \gls{meteor}. The results indicate that the fine-tuned perform much better than the base model in this task. Both, the models trained with \gls{qlora} and \gls{lora} managed to generalize the report format, presenting the recommendations in a similar way to a real dermatologist. The greatest improvement was observed with \gls{bleu} and \gls{meteor} metrics. \autoref{fig:nlp_metrics} depics the \gls{nlp} metrics for the models.
+
+The reports generated by \gls{llama}-3.2-11B followed the specified template and used a medical language, but they failed to provide the expected recommendations. Besides, the reports generated by the fine-tuned models also presented some problems, such as the presence of gramatical errors, which could be explained by errors in the source dataset itself.
+
+\subsection{Comparison between QLoRA and LoRA}
+
+Lastly, when comparing the training metrics presented in the \Cref{fig:duration,fig:memory}, and the \autoref{tab:final_training_metrics}, we noticed that both fine-tuning methods require similar amounts of time to be concluded. Furthermore, \gls{lora} tends to alocate more memory. In the first scenario, \gls{lora} had an average memory utilization 84.19\% greater than \gls{qlora}. While in the second scenario, \gls{lora} used 25.94\% more memory. The discrepancy in the difference between the memory utilization of both methods for the first and second scenario can be explained by the change in the hyperparameters that affect the memory usage, such as the device batch size and the gradient accumulation step. Moreover, the aspects of each dataset can also influence the memory utilization.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=1.0\columnwidth,keepaspectratio]{figures/Fine-tuning Duration.pdf}
+    \caption{Fine-tuning duration in the first scenario for different dataset sizes.}
+    \label{fig:duration}
+\end{figure}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=1.0\columnwidth,keepaspectratio]{figures/Memory Utilization.pdf}
+    \caption{Memory utilization in the first scenario for different dataset sizes.}
+    \label{fig:memory}
+\end{figure}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l|c|c}
+        \hline
+        Fine-tuning method & Duration (min) & Memory utilization (GB) \\ \hline
+        \gls{qlora}            & 286,83                     & 47,57                  \\
+        \gls{lora}             & 276,46                     & 59,91                  \\ \hline
+    \end{tabular}
+    \caption{Training metrics for both methods in the second scenario.}
+    \label{tab:final_training_metrics}
+\end{table}
+
+% TODO: Conclusion
 \section{Conclusion}
 
 \subsection{Future work}
